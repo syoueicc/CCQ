@@ -2,11 +2,15 @@ import 'reflect-metadata'
 import * as Koa from 'koa'
 import * as KoaRouter from 'koa-router'
 import * as glob from 'glob'
-import {resolve} from 'path'
+import { resolve, parse } from 'path'
+
+interface middlewars {
+    [key: string]: any
+}
 
 const routerPrefix = Symbol('routerPrefix')
 const routeMap = []
-
+export const Middleware: middlewars = {}
 export default class Ccq extends Koa {
 
     router: KoaRouter
@@ -18,14 +22,36 @@ export default class Ccq extends Koa {
     }
 
     _init() {
-        let controllerPath = `${resolve(process.cwd(), 'src/controllers/**/*')}`
+        this.registerMiddlewares()
+        this.registerRouters()
+    }
+
+    /**
+     * 遍历添加controller、路由
+     */
+    registerRouters() {
+        const controllerPath = `${resolve(process.cwd(), 'src/controllers/**/*')}`
         glob.sync(controllerPath).forEach(require)
         for( let { target, method, path, cb } of (<any>Object).values(routeMap) ) {
-
             this.router[method](parseControllerPath(target[routerPrefix]) + normalizePath(path), ...cb)
         }
         this.use(this.router.routes())
         this.use(this.router.allowedMethods())
+    }
+
+    /**
+     * 添加中间件
+     */
+    registerMiddlewares() {
+        const middlewarePath = `${resolve(process.cwd(), 'src/middlewares/**/*')}`
+        glob.sync(middlewarePath).forEach(middleware => {
+            const fn = require(middleware).default
+            const name = parse(middleware).name
+            Middleware[name] = params => (target, key) => {
+                if (!Array.isArray(target[key])) target[key] = [target[key]]
+                target[key].splice(target[key].length - 1, 0, (ctx, next) => { fn(ctx, next, params) })
+            }
+        })
     }
 }
 

@@ -2,7 +2,7 @@
   "name": "pacat",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./bin/index.js",
   "scripts": {
     "dev": "nodemon --watch 'src/**/*' --watch 'lib/**/*' -e ts,tsx --exec 'ts-node' ./src/server.ts",
     "build": "yarn clean && tsc",
@@ -10,7 +10,7 @@
     "clean": "rm -rf dist",
     "testd": "ts-node ./lib/index.ts"
   },
-  "author": "",
+  "author": "cancel wu",
   "license": "ISC",
   "devDependencies": {
     "@types/koa": "^2.0.46",
@@ -26,6 +26,8 @@
     "koa": "^2.5.3",
     "koa-router": "^7.4.0",
     "lodash": "^4.17.11",
-    "reflect-metadata": "^0.1.12"
+    "reflect-metadata": "^0.1.12",
+    "sqlite3": "^4.0.3",
+    "typeorm": "^0.2.8"
   }
 }
