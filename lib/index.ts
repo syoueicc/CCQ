@@ -1,8 +1,14 @@
 import 'reflect-metadata'
 import * as Koa from 'koa'
 import * as KoaRouter from 'koa-router'
+import * as convert from 'koa-convert'
 import * as glob from 'glob'
 import { resolve, parse } from 'path'
+import { createConnection } from "typeorm";
+
+(async () => {
+    await createConnection()
+})()
 
 interface middlewars {
     [key: string]: any
@@ -22,6 +28,7 @@ export default class Ccq extends Koa {
     }
 
     _init() {
+        this.registerGlobalMiddlewares()
         this.registerMiddlewares()
         this.registerRouters()
     }
@@ -30,7 +37,7 @@ export default class Ccq extends Koa {
      * 遍历添加controller、路由
      */
     registerRouters() {
-        const controllerPath = `${resolve(process.cwd(), 'src/controllers/**/*')}`
+        const controllerPath = resolve(process.cwd(), 'src/controllers/**/*')
         glob.sync(controllerPath).forEach(require)
         for( let { target, method, path, cb } of (<any>Object).values(routeMap) ) {
             this.router[method](parseControllerPath(target[routerPrefix]) + normalizePath(path), ...cb)
@@ -43,7 +50,7 @@ export default class Ccq extends Koa {
      * 添加中间件
      */
     registerMiddlewares() {
-        const middlewarePath = `${resolve(process.cwd(), 'src/middlewares/**/*')}`
+        const middlewarePath = resolve(process.cwd(), 'src/middlewares/**/*')
         glob.sync(middlewarePath).forEach(middleware => {
             const fn = require(middleware).default
             const name = parse(middleware).name
@@ -52,6 +59,11 @@ export default class Ccq extends Koa {
                 target[key].splice(target[key].length - 1, 0, (ctx, next) => { fn(ctx, next, params) })
             }
         })
+    }
+
+    registerGlobalMiddlewares() {
+        const config = require(resolve(process.cwd(), 'src/config')).default
+        config.middlewares.forEach( middleware => this.use(convert(middleware[0](middleware[1]))))
     }
 }
 
