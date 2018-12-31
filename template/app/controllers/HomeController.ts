@@ -4,7 +4,7 @@ import { Controller, Router, Middleware } from 'ccq-core'
 class IndexController {
 
   @Router.get('/')
-  @Middleware.middleware('testMiddleware')
+  @Middleware.testMiddleware('testMiddleware')
   async index(ctx, next) {
     ctx.body = 'hello world'
   }

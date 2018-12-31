@@ -1,6 +1,6 @@
 {
   "name": "ccq-cli",
-  "version": "0.1.2",
+  "version": "0.2.3",
   "description": "koa project with typescript generator",
   "bin": {
     "ccq": "./bin/ccq.js"
