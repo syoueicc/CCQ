@@ -2,6 +2,11 @@
 
 ## Install
 
+### npx
+```
+npx ccq-cli init project-name
+```
+
 ### npm
 ```
 npm install -g ccq-cli
