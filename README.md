@@ -16,7 +16,7 @@ yarn add global ccq-cli
 
 ## create new project
 ```
-ccp init project-name
+ccq init project-name
 cd project-name && yarn
 ```
 

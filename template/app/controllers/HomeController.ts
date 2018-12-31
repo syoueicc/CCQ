@@ -1,4 +1,4 @@
-import { Controller, Router, Middleware } from 'ccq'
+import { Controller, Router, Middleware } from 'ccq-core'
 
 @Controller("/")
 class IndexController {

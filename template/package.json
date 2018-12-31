@@ -21,7 +21,7 @@
     "typescript": "^3.0.3"
   },
   "dependencies": {
-    "ccq-cli": "^0.1.0",
+    "ccq-core": "^0.1.0",
     "koa": "^2.5.3",
     "koa-better-body": "^3.0.4",
     "koa-convert": "^1.2.0",

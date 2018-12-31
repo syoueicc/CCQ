@@ -1,5 +1,5 @@
 import 'reflect-metadata'
-import Server from 'ccq'
+import Server from 'ccq-core'
 
 const app = new Server()
 
